@@ -62,4 +62,5 @@ for index, row in df.iloc[:5].iterrows():
         time.sleep(pause_duration)
 
 responses_df = pd.DataFrame(responses, columns=['ecli','sentence', 'response'])
+#TODO: add date to filename
 responses_df.to_csv("Sectioning/GPT/Responses/responses.csv", index=False)
