@@ -35,12 +35,12 @@ def parallel_process(func, args_list, num_processes=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Data sectioning script')
-    parser.add_argument('--input', type=str, default="data/sectioned/2022_rs_data.csv", help="The path to the data CSV file")
+    parser.add_argument('--input', type=str, default="Dataset/Creation/subset.csv", help="The path to the data CSV file")
     args = parser.parse_args()
 
     # Load patterns from the file
-    split_file = open('general_utils\split_patterns.txt', 'r')
-    merge_file = open('general_utils\merge_patterns.txt', 'r')
+    split_file = open('Dataset/Creation/split_patterns.txt', 'r')
+    merge_file = open('Dataset/Creation/merge_patterns.txt', 'r')
     split_lines = split_file.readlines()
     split_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in split_lines]
     merge_lines = merge_file.readlines()
@@ -65,7 +65,7 @@ if __name__ == '__main__':
     df_test = df_test.head(100)
     df_test['sections'] = segmented
     print(df_test)
-    #df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
+    df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])
     df_test.to_csv('sectioned_data_2022_test.csv') # sep = ';' --> let csv use ; as separator
     #df_metadata['sections'] = segmented

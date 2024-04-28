@@ -1,5 +1,7 @@
 Dataset/Raw
 Dataset/Metadata
 Sectioning/GPT/Responses
-SRS/stats_20_22.csv
-SRS/stats_20_22.png
+SRS/Stats
+Dataset/Creation/subset.csv
+sectioned_data_2022_test.csv
+sorted_sections.csv
