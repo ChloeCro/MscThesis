@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
         # Optional: Save
         if args.save == True:
-            df.to_csv(f'Dataset/Store/{year}_rs_data.csv', index=False)
+            df.to_csv(f'Dataset/Metadata/{year}_rs_data.csv', index=False)
 
 # python general_utils\create_data_csv.py --year 1905 --save
 # python general_utils/create_sectioned_from_xml.py --save
