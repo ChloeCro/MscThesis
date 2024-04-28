@@ -1,0 +1,16 @@
+Kun je het volgende stuk tekst opsplitsen in segmenten gebaseerd op nummer? Dus 1, 2, 3, 4 etc. zijn verschillende stukjes, ook subkopjes zoals 1.1, 1.2 etc. horen bij 1.\n
+
+{text}
+ 
+Zou je ieder segment vervolgens kunnen toewijzen aan een van de volgende juridische onderwerpen:
+
+feiten en omstandigheden, 
+voorgaande juridische acties en besluiten (ook onderscheid tussen verweerder, appellante en de verschillende juridische lichamen zoals, rechtbank, gerechtshof etc.), 
+standpunten appellante, 
+standpunten verweerder, 
+juridische middelen, 
+beoordeling door het college.
+
+Schrijf het resultaat op als een een lijst dat begint met het nummer van het tekst segment. 
+De opmaak van de lijst moet niet genummerd zijn of opsommingstekens hebben, zet tussen elk onderwerp 2 newlines en elk segment behorende tot een onderwerp 1 newline. 
+Vermeld niks anders dan het onderwerp en de nummers van de segmenten (ook niet de tekst van de segmenten).
