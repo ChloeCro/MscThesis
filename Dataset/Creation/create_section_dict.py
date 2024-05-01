@@ -36,4 +36,4 @@ organized_df = apply_to_dataframe(data, 'sections')
 print(organized_df.organized[0])
 
 # Saving the processed DataFrame to a new CSV file
-organized_df.to_csv("sorted_sections.csv")
+organized_df.to_csv("sorted_sections.csv", index=False)

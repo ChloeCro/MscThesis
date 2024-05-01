@@ -67,6 +67,6 @@ if __name__ == '__main__':
     print(df_test)
     df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])
-    df_test.to_csv('sectioned_data_2022_test.csv') # sep = ';' --> let csv use ; as separator
+    df_test.to_csv('sectioned_data_2022_test.csv', index=False) # sep = ';' --> let csv use ; as separator
     #df_metadata['sections'] = segmented
     #df_metadata.to_csv('sectioned_data.csv')
