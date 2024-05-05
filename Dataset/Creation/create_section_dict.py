@@ -29,7 +29,7 @@ def apply_to_dataframe(df, column_name):
     return df
 
 # Reading the CSV file
-data = pd.read_csv("sectioned_data_2022_test.csv")
+data = pd.read_csv("sectioned_data_2022_improved.csv")
 
 # Applying the function to the DataFrame
 organized_df = apply_to_dataframe(data, 'sections')

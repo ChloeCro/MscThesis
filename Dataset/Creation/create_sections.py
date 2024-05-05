@@ -35,7 +35,7 @@ def parallel_process(func, args_list, num_processes=None):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Data sectioning script')
-    parser.add_argument('--input', type=str, default="Dataset/Creation/subset.csv", help="The path to the data CSV file")
+    parser.add_argument('--fullset', action='store_true', help='If provided, use the full data CSV file.')
     args = parser.parse_args()
 
     # Load patterns from the file
@@ -47,13 +47,16 @@ if __name__ == '__main__':
     merge_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in merge_lines]
 
     # Load the CSV data into a DataFrame
-    df_metadata = pd.read_csv(args.input)
+    if args.fullset: path = "Dataset/Metadata/combined.csv" 
+    else: path = "Dataset/Creation/subset.csv"
+
+    df_metadata = pd.read_csv(path)
 
     print("Gathering documents...")
     documents = df_metadata['overwegingen'].astype(str).tolist()
 
     segmented = []
-    for i, text in enumerate(documents[:100]):
+    for i, text in enumerate(documents):
         if i % 100 == 0:
             print(f"Processing document number: {i} of {len(documents)}")
         sections = text_sectioning(text, split_patterns, merge_patterns)
@@ -62,11 +65,11 @@ if __name__ == '__main__':
 
 
     df_test = df_metadata.copy()
-    df_test = df_test.head(100)
+    #df_test = df_test.head(100)
     df_test['sections'] = segmented
     print(df_test)
     df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])
-    df_test.to_csv('sectioned_data_2022_test.csv', index=False) # sep = ';' --> let csv use ; as separator
+    df_test.to_csv('sectioned_data_2022_improved_fullset.csv', index=False) # sep = ';' --> let csv use ; as separator
     #df_metadata['sections'] = segmented
     #df_metadata.to_csv('sectioned_data.csv')
