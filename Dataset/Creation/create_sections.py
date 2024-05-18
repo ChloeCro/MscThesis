@@ -1,9 +1,15 @@
 import pandas as pd
+import sys, os
 import re
 import multiprocessing
 from tqdm import tqdm
 import argparse
 from pathlib import Path
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from Utils.constants import MERGE_PATTERNS_PATH, SPLIT_PATTERNS_PATH, COMBINED_PATH, SUBSET_PATH, OVERWEGINGEN_COL, SECTIONS_COL
 
 # Function to concatenate the matched groups (excluding the space)
 def replacer(match):
@@ -39,21 +45,21 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load patterns from the file
-    split_file = open('Dataset/Creation/split_patterns.txt', 'r')
-    merge_file = open('Dataset/Creation/merge_patterns.txt', 'r')
+    split_file = open(SPLIT_PATTERNS_PATH, 'r')
+    merge_file = open(MERGE_PATTERNS_PATH, 'r')
     split_lines = split_file.readlines()
     split_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in split_lines]
     merge_lines = merge_file.readlines()
     merge_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in merge_lines]
 
     # Load the CSV data into a DataFrame
-    if args.fullset: path = "Dataset/Metadata/combined.csv" 
-    else: path = "Dataset/Creation/subset.csv"
+    if args.fullset: path = COMBINED_PATH
+    else: path = SUBSET_PATH
 
     df_metadata = pd.read_csv(path)
 
     print("Gathering documents...")
-    documents = df_metadata['overwegingen'].astype(str).tolist()
+    documents = df_metadata[OVERWEGINGEN_COL].astype(str).tolist()
 
     segmented = []
     for i, text in enumerate(documents):
@@ -66,7 +72,7 @@ if __name__ == '__main__':
 
     df_test = df_metadata.copy()
     #df_test = df_test.head(100)
-    df_test['sections'] = segmented
+    df_test[SECTIONS_COL] = segmented
     print(df_test)
     df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])

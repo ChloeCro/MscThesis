@@ -1,0 +1,10 @@
+I have a list of legal topics that appear in Dutch legal cases. The legal topics are as follows:
+
+- facts and circumstances,
+- previous legal actions and decisions (also a distinction between defendant, appellant and the various legal bodies such as a court, court of appeal, etc.),
+- appellant's positions,
+- defendant's positions,
+- legal means,
+- assessment by the council.
+
+Give me the topic from the list that fits best to the following section, provide no other text than the topic name:

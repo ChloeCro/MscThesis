@@ -1,4 +1,5 @@
 import os
+import sys
 import re
 import string
 import argparse
@@ -6,6 +7,11 @@ import multiprocessing
 import pandas as pd
 import numpy as np
 from bs4 import BeautifulSoup
+
+# Add the parent directory to the Python path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
+from Utils.constants import METADATA_PATH, RAW_DIR
 
 def is_valid_tag(tag):
     return tag.name != 'title'
@@ -96,7 +102,8 @@ if __name__ == '__main__':
     #year = args.year
     print("start")
     for year in years:
-        folder_path = f'Dataset/Raw/{year}' 
+        folder_path = RAW_DIR.format(year=year)
+        #folder_path = f'Dataset/Raw/{year}' 
         xml_files = [os.path.join(folder_path, file) for file in os.listdir(folder_path) if file.endswith('.xml')]
 
         # Process the data
@@ -115,7 +122,9 @@ if __name__ == '__main__':
 
         # Optional: Save
         if args.save == True:
-            df.to_csv(f'Dataset/Metadata/{year}_rs_data.csv', index=False)
+            metadata_file_path = METADATA_PATH.format(year=year)
+            df.to_csv(metadata_file_path, index=False)
+            #df.to_csv(f'Dataset/Metadata/{year}_rs_data.csv', index=False)
 
 # python general_utils\create_data_csv.py --year 1905 --save
 # python general_utils/create_sectioned_from_xml.py --save
