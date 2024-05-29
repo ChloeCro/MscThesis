@@ -45,8 +45,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     # Load patterns from the file
-    split_file = open(SPLIT_PATTERNS_PATH, 'r')
-    merge_file = open(MERGE_PATTERNS_PATH, 'r')
+    split_file = open('C:\\Users\\Chloe\\Documents\\MaastrichtLaw&Tech\\Thesis\\MscThesis\\Dataset\\Creation\\split_patterns.txt', 'r')
+    merge_file = open('C:\\Users\\Chloe\\Documents\\MaastrichtLaw&Tech\\Thesis\\MscThesis\\Dataset\\Creation\\merge_patterns.txt', 'r')
     split_lines = split_file.readlines()
     split_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in split_lines]
     merge_lines = merge_file.readlines()
@@ -56,6 +56,7 @@ if __name__ == '__main__':
     if args.fullset: path = COMBINED_PATH
     else: path = SUBSET_PATH
 
+    print(COMBINED_PATH)
     df_metadata = pd.read_csv(path)
 
     print("Gathering documents...")
@@ -76,6 +77,6 @@ if __name__ == '__main__':
     print(df_test)
     df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])
-    df_test.to_csv('sectioned_data_2022_improved_fullset.csv', index=False) # sep = ';' --> let csv use ; as separator
+    df_test.to_csv('sectioned_data_2022_fullset.csv', index=False) # sep = ';' --> let csv use ; as separator
     #df_metadata['sections'] = segmented
     #df_metadata.to_csv('sectioned_data.csv')

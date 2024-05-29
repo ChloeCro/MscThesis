@@ -35,11 +35,11 @@ def apply_to_dataframe(df, column_name):
     return df
 
 # Reading the CSV file
-data = pd.read_csv(COMBINED_PATH)
+data = pd.read_csv('C:\\Users\\Chloe\\Documents\\MaastrichtLaw&Tech\\Thesis\\MscThesis\\sectioned_data_2022_fullset.csv')
 
 # Applying the function to the DataFrame
 organized_df = apply_to_dataframe(data, 'sections')
-print(organized_df.organized[0])
+print(organized_df.sections)
 
 # Saving the processed DataFrame to a new CSV file
-organized_df.to_csv(SECTION_DATA_PATH, index=False)
+organized_df.to_csv('section_dict.csv', index=False)

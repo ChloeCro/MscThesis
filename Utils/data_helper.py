@@ -8,6 +8,18 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 
 from Utils.constants import SECTIONS_COL
 
+def load_df(path):
+    data = pd.read_csv(path)
+    return data
+
+def get_section_dict(row):
+    """ Gets section dictionary from dataframe """
+    d = row[SECTIONS_COL].apply(ast.literal_eval)
+    return d
+
+#######################################################################
+
+
 def get_single_document_list(row):
     """
     (for now) Extracts the texts from the three section columns for each row, 
@@ -39,14 +51,7 @@ def filter_df(df):
     df_filtered = df_filtered[df_filtered['inhoudsindicatie'].apply(lambda x: len(x.split(' ') if isinstance(x, str) else '') >= 15)]
     return df_filtered
 
-def load_df(path):
-    data = pd.read_csv(path)
-    return data
 
-def get_section_dict(row):
-    """ Gets section dictionary from dataframe """
-    d = row[SECTIONS_COL].apply(ast.literal_eval)
-    return d
 
 def create_csv_from_df():
     pass

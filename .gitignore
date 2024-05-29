@@ -7,3 +7,9 @@ sectioned_data_2022_test.csv
 sorted_sections.csv
 sectioned_data_2022_improved.csv
 sectioned_data_2022_improved_fullset.csv
+ollama_processed_impr.csv
+ollama_processed.csv
+section_dict.csv
+results_ollama.csv
+test_preproc.csv
+sectioned_data_2022_fullset.csv
