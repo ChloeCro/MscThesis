@@ -1,6 +1,7 @@
 import os
 import re
 import sys
+import ast
 import string
 import argparse
 import multiprocessing
@@ -13,7 +14,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 
 from datetime import timedelta
 from multiprocessing import Pool
@@ -32,7 +32,7 @@ from summ_pipeline.extractive_methods.graph_based_methods import textRank
 from summ_pipeline.extractive_methods.clustering_based_methods import k_means
 # from summ_pipeline.extractive_methods.heuristic_based_methods import
 from summ_pipeline.extractive_methods.deeplearning_based_methods import bertSum #, gptSum
-from summ_pipeline.abstractive_methods.methods import bart
+from summ_pipeline.abstractive_methods.methods import bart, llm_summarizer
 #from old.bert_method import bert
 #from summ_pipeline.abstractive_methods.methods import bart, t5
 
@@ -79,7 +79,8 @@ class Summarization():
         elif self.method == 4:
             result = bart(text)
             print(result)
-        # Add more methods as needed
+        elif self.method == 5:
+            result = llm_summarizer(text)
         else:
             raise ValueError(f"Unsupported summarization method: {self.method}")
         print(result)
@@ -137,6 +138,8 @@ if __name__ == "__main__":
     # read the data csv as pd dataframe and filter df by reference summaries
     df = pd.read_csv(args.input)
     #df = filter_df(df)
+    df['text'] = df['text'].apply(ast.literal_eval)
+    print(type(df['text'][0]))
 
     print(len(df))
     print(df)
@@ -167,9 +170,14 @@ if __name__ == "__main__":
             summary_result.append(summary)
     elif args.multi == False:
         summary_result = []
-        print(documents)
-        summary = summarizer.summarize_text(documents[:args.n_cases], param)
-        print("summary: ", summary)
+        #print(documents)
+        for doc in documents:
+            doc = ast.literal_eval(doc)
+            print(doc)
+            for section in doc:
+                print(section)
+                summary = summarizer.summarize_text(section, param)
+                print("summary: ", summary)
         summary_result.append(summary)
     else:
         print("Multiprocessing...")
@@ -199,6 +207,8 @@ if __name__ == "__main__":
         path = "results/results_bertextract/"
     elif args.method == 4:
         path = "results/results_bart/"
+    elif args.method == 5:
+        path = "results/results_llm/"
     else:
         raise ValueError(f"Unsupported summarization method: {args.method}")
 

@@ -6,11 +6,41 @@ def bart(text: str) -> str:
     model_name = "facebook/bart-large-cnn"
     model = BartForConditionalGeneration.from_pretrained(model_name)
     tokenizer = BartTokenizer.from_pretrained(model_name)
+    max_length = max(50, int(0.2 * len(text)))
+    print(max_length)
 
     inputs = tokenizer.encode("summarize: " + text, return_tensors="pt", max_length=1024, truncation=True)
-    summary_ids = model.generate(inputs, max_length=500, min_length=300, length_penalty=1, num_beams=4, early_stopping=True)
+    summary_ids = model.generate(inputs, max_length=max_length, min_length=50, length_penalty=1, num_beams=4, early_stopping=True)
 
     summary = tokenizer.decode(summary_ids[0], skip_special_tokens=True)
     print("in bart module: ", summary)
     #formatted_summary = "\n".join(textwrap.wrap(summary, width=80))
     return summary
+
+
+def llm_summarizer(text: str) -> str:
+    # Mistral 7B
+    model = 'mistral'
+
+    # Load the system prompt
+    with open(SUMM_SYS_PROMPT_PATH, 'r', encoding='utf-8') as file:
+        sys_prompt = file.read()
+
+    # Load the summarization prompt
+    with open(SUMM_PROMPT_NL_PATH, 'r', encoding='utf-8') as file:
+        prompt = file.read() 
+
+    # Get response
+    response = ollama.chat(model=model, keep_alive=0, options={'temperature': 0.0, 'seed': 42, "top_p": 0.0}, messages=[
+            {
+                'role': 'system',
+                'content': sys_prompt
+            },
+            {
+                'role': 'user',
+                'content': prompt + input_text
+            },
+        ])
+    
+    return response
+
