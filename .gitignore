@@ -13,3 +13,5 @@ section_dict.csv
 results_ollama.csv
 test_preproc.csv
 sectioned_data_2022_fullset.csv
+bart_summ.csv
+ollama_summ.csv

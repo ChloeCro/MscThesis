@@ -77,7 +77,7 @@ class OllamaSectioner():
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Ollama sectioning')
-    parser.add_argument('--input', default='C:/Users/Chloe/Documents/MaastrichtLaw&Tech/Thesis/MscThesis/section_dict.csv', help='Pick the csv to load.')
+    parser.add_argument('--input', default='C:\\Users\\Chloe\\Documents\\MaastrichtLaw&Tech\\Thesis\\MscThesis\\Dataset\\Metadata\\subset_section.csv', help='Pick the csv to load.')
     parser.add_argument('--model', choices=['phi2', 'phi3', 'gemma', 'wizardlm2', 'mistral', 'llama3:instsruct', 'llama2'], help='Choose LLM')
     parser.add_argument('--temp', default=0.0, help='Sets the temperature.')
     parser.add_argument('--top_p',default=0.0, help='Sets the top p')

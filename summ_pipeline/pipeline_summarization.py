@@ -83,8 +83,8 @@ class Summarization():
             result = llm_summarizer(text)
         else:
             raise ValueError(f"Unsupported summarization method: {self.method}")
-        print(result)
-        return ' '.join(result) #result
+        print("result: ",result)
+        return result #result
 
     @staticmethod
     def summarize_wrapper(text, method, param): 
@@ -112,6 +112,20 @@ def parallel_process(func, args_list):
             results.append(result)
     return results
 
+# Function to apply summarization and concatenate summaries for each row
+def summarize_text_list(text_list, row_id):
+    params = [4]
+    model = None
+    print(f"Processing row with ID: {row_id}")
+    summarized_texts = []
+    for text in text_list:
+        if isinstance(text, str):
+            summarized_texts.append(summarizer.summarize_text(text, params, model))
+        else:
+            summarized_texts.append([''])  # Return empty string for non-string values
+    concatenated_summary = ' '.join([sublist for sublist in summarized_texts])  # Flatten the list of lists and join
+    print("concat: ", concatenated_summary)
+    return concatenated_summary
 """
 # old parallel_process before progress bar
 def parallel_process(func, args_list): 
@@ -138,11 +152,12 @@ if __name__ == "__main__":
     # read the data csv as pd dataframe and filter df by reference summaries
     df = pd.read_csv(args.input)
     #df = filter_df(df)
-    df['text'] = df['text'].apply(ast.literal_eval)
-    print(type(df['text'][0]))
+    #df['text'] = df['text'].apply(ast.literal_eval)
+    #print(type(df['text'][0]))
 
     print(len(df))
     print(df)
+    df = df.head(50)
     
     #try it with a number of cases
     #df = df.head(5)
@@ -150,9 +165,9 @@ if __name__ == "__main__":
 
     # iterate in parallel over each row of the df to create a list of texts (documents)
     print("Gathering documents...")
-    documents = parallel_process(get_text,[(row,) for row in df.to_dict('records')])  # TODO: expand to text from CSV
+    #documents = parallel_process(get_text,[(row,) for row in df.to_dict('records')])  # TODO: expand to text from CSV
     
-    print(f"Number of documents: {len(documents)}")
+    #print(f"Number of documents: {len(documents)}")
     #raise RuntimeError('Intentionally stopping the code here for debugging purposes.')
     summarizer = Summarization(args.method)
 
@@ -168,6 +183,11 @@ if __name__ == "__main__":
             print("Number " + str(id) + " of " + str(len(documents[:args.n_cases])))
             summary = summarizer.summarize_text(doc, param, bert_model)
             summary_result.append(summary)
+    elif args.method == 4:
+        # Apply the summarization function to each row in the DataFrame
+        df['text'] = df['text'].apply(ast.literal_eval)
+        df['full_summary'] = df.apply(lambda row: summarize_text_list(row['text'], row['id_from_df']), axis=1)
+        df.to_csv('bart_summ.csv', index=False)
     elif args.multi == False:
         summary_result = []
         #print(documents)

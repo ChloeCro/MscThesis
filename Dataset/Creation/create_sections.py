@@ -9,7 +9,7 @@ from pathlib import Path
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from Utils.constants import MERGE_PATTERNS_PATH, SPLIT_PATTERNS_PATH, COMBINED_PATH, SUBSET_PATH, OVERWEGINGEN_COL, SECTIONS_COL
+from Utils.constants import MERGE_PATTERNS_PATH, SPLIT_PATTERNS_PATH, COMBINED_PATH, SUBSET_PATH, COMBINED_SECTION_PATH, SUBSET_SECTION_PATH, OVERWEGINGEN_COL, SECTIONS_COL
 
 # Function to concatenate the matched groups (excluding the space)
 def replacer(match):
@@ -53,8 +53,12 @@ if __name__ == '__main__':
     merge_patterns = [line.strip()[2:-1].replace('\\\\', '\\') for line in merge_lines]
 
     # Load the CSV data into a DataFrame
-    if args.fullset: path = COMBINED_PATH
-    else: path = SUBSET_PATH
+    if args.fullset: 
+        path = COMBINED_PATH
+        save_name = COMBINED_SECTION_PATH
+    else: 
+        path = SUBSET_PATH
+        save_name = SUBSET_SECTION_PATH
 
     print(COMBINED_PATH)
     df_metadata = pd.read_csv(path)
@@ -77,6 +81,6 @@ if __name__ == '__main__':
     print(df_test)
     df_test = df_test.replace('\n+', ' ', regex=True) # remove \n for excel to view csv correctly
     #print(df_test['sections'].iloc[0])
-    df_test.to_csv('sectioned_data_2022_fullset.csv', index=False) # sep = ';' --> let csv use ; as separator
+    df_test.to_csv(save_name, index=False) # sep = ';' --> let csv use ; as separator
     #df_metadata['sections'] = segmented
     #df_metadata.to_csv('sectioned_data.csv')

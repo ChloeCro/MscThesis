@@ -2,13 +2,14 @@
 
 import sys, os
 import pandas as pd
+import argparse
 import ast
 from collections import defaultdict
 
 # Add the parent directory to the Python path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
-from Utils.constants import SECTION_DATA_PATH, COMBINED_PATH
+from Utils.constants import COMBINED_SECTION_PATH, SUBSET_SECTION_PATH
 
 def organize_by_number(strings):
     result = defaultdict(list)
@@ -34,12 +35,22 @@ def apply_to_dataframe(df, column_name):
     df[column_name] = df[column_name].apply(organize_by_number)
     return df
 
-# Reading the CSV file
-data = pd.read_csv('C:\\Users\\Chloe\\Documents\\MaastrichtLaw&Tech\\Thesis\\MscThesis\\sectioned_data_2022_fullset.csv')
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Data sectioning script')
+    parser.add_argument('--fullset', action='store_true', help='If provided, use the full data CSV file.')
+    args = parser.parse_args()
 
-# Applying the function to the DataFrame
-organized_df = apply_to_dataframe(data, 'sections')
-print(organized_df.sections)
+    if args.fullset:
+        path = COMBINED_SECTION_PATH
+    else:
+        path = SUBSET_SECTION_PATH
 
-# Saving the processed DataFrame to a new CSV file
-organized_df.to_csv('section_dict.csv', index=False)
+    # Reading the CSV file
+    data = pd.read_csv(path)
+
+    # Applying the function to the DataFrame
+    organized_df = apply_to_dataframe(data, 'sections')
+    print(organized_df.sections)
+
+    # Saving the processed DataFrame to a new CSV file
+    organized_df.to_csv(path, index=False)
