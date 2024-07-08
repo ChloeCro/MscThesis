@@ -10,6 +10,7 @@ BESLISSING_COL = 'beslissing'
 SECTIONS_COL = 'sections'
 ORGANIZED_COL = 'organized'
 OLLAMA_COL = 'ollama'
+SUMM_COL = 'summary'
 
 
 ##### FILE CONSTANTS #####
@@ -31,6 +32,7 @@ SECTIONING_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '
 OLLAMA_SYS_PROMPT_PATH = os.path.join(SECTIONING_DIR, 'Ollama', 'system_prompt.txt')
 OLLAMA_PROMPT_PATH = os.path.join(SECTIONING_DIR, 'Ollama', 'prompt.txt')
 OLLAMA_PROMPT_NL_PATH = os.path.join(SECTIONING_DIR, 'Ollama', 'prompt_nl.txt')
+OLLAMA_SUMM_PROMPT_NL_PATH = os.path.join(SECTIONING_DIR, 'Ollama', 'prompt_summ_nl.txt')
 GPT_PROMPT_PATH = os.path.join(SECTIONING_DIR, 'GPT', 'prompt.txt')
 SUMMARIZATION_DIR = os.path.abspath(os.path.join('Summarization'))
 SUMM_SYS_PROMPT_PATH = ""

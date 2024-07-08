@@ -27,7 +27,7 @@ sys.path.append(str(script_dir.parent))
 
 from Utils.data_helper import get_single_document_list, filter_df, create_csv_from_df, get_text
 #from Utils.model_utils import load_model
-from summ_pipeline.utils.preprocess_text import remove_info
+#from summ_pipeline.utils.preprocess_text import remove_info
 from summ_pipeline.extractive_methods.graph_based_methods import textRank
 from summ_pipeline.extractive_methods.clustering_based_methods import k_means
 # from summ_pipeline.extractive_methods.heuristic_based_methods import
@@ -40,10 +40,6 @@ class Summarization():
 
     def __init__(self, method):
         self.method = method 
-
-        #if self.requires_model(method): # will prob not need this
-            # is_model specifies if a model is required for a summarization method, so we can load it here --> will prob not need this
-        #    self.summarizer_model = load_model()
 
 
     def requires_model(self, method_number):
@@ -126,16 +122,47 @@ def summarize_text_list(text_list, row_id):
     concatenated_summary = ' '.join([sublist for sublist in summarized_texts])  # Flatten the list of lists and join
     print("concat: ", concatenated_summary)
     return concatenated_summary
-"""
-# old parallel_process before progress bar
-def parallel_process(func, args_list): 
-    num_processes = multiprocessing.cpu_count()
-    print(num_processes)
-    with multiprocessing.Pool(processes=num_processes) as pool:
-        results = list(tqdm(pool.starmap(func, args_list), total=len(args_list)))
-        #results = pool.starmap(func, args_list)
-    return results
-"""
+
+def summarize_from_dict(dictionary, row_id, proces, beslis):
+    params = [4]
+    model = None
+    order_of_keys = ['feiten en omstandigheden', 'eerdere juridische acties en beslissingen (tevens onderscheid tussen gedaagde, appellant en de verschillende juridische instanties zoals rechtbank, hof van beroep etc.)',
+                'standpunten van appellant', 'standpunten van verweerder', 'juridische middelen', 'beoordeling door rechter/College', 'proceskosten']
+    print(f"Processing row with ID: {row_id}")
+    summarized_texts = []
+    text_to_process = []
+    print(dictionary)
+
+    text_to_process.append(proces)
+
+    # Loop over the keys in the dictionary
+    for key in dictionary:
+        # Check if the 'class' value matches any value in order_of_keys
+        if dictionary[key]['class'] in order_of_keys:
+            # Collect the corresponding 'text' value
+            text_to_process.append(dictionary[key]['text'])
+    
+    text_to_process.append(beslis)
+    print(text_to_process)
+    
+    for text in text_to_process:
+        if isinstance(text, str):
+            summarized_texts.append(summarizer.summarize_text(text, params, model))
+        else:
+            summarized_texts.append([''])  # Return empty string for non-string values
+    concatenated_summary = ' '.join([sublist for sublist in summarized_texts])  # Flatten the list of lists and join
+    print("concat: ", concatenated_summary)
+
+    return concatenated_summary
+
+def safe_literal_eval(val):
+    try:
+        return ast.literal_eval(val)
+    except (ValueError, SyntaxError):
+        return val
+
+    
+
 if __name__ == "__main__":
     # create the argument parser, add the arguments
     parser = argparse.ArgumentParser(description='Summarization script')
@@ -151,6 +178,7 @@ if __name__ == "__main__":
 
     # read the data csv as pd dataframe and filter df by reference summaries
     df = pd.read_csv(args.input)
+    df = df.applymap(safe_literal_eval)
     #df = filter_df(df)
     #df['text'] = df['text'].apply(ast.literal_eval)
     #print(type(df['text'][0]))
@@ -170,6 +198,7 @@ if __name__ == "__main__":
     #print(f"Number of documents: {len(documents)}")
     #raise RuntimeError('Intentionally stopping the code here for debugging purposes.')
     summarizer = Summarization(args.method)
+    instantie = df['instantie'][0]
 
     # iterate in parallel over each text in the list and summarize them using args.method
     print(f"Summarizing using method {args.method}...")
@@ -185,9 +214,10 @@ if __name__ == "__main__":
             summary_result.append(summary)
     elif args.method == 4:
         # Apply the summarization function to each row in the DataFrame
-        df['text'] = df['text'].apply(ast.literal_eval)
-        df['full_summary'] = df.apply(lambda row: summarize_text_list(row['text'], row['id_from_df']), axis=1)
-        df.to_csv('bart_summ.csv', index=False)
+        #df['text'] = df['text'].apply(ast.literal_eval)
+        #df['full_summary'] = df.apply(lambda row: summarize_text_list(row['text'], row['ecli']), axis=1)
+        df['summary'] = df.apply(lambda row: summarize_from_dict(row['ollama'], row['ecli'], row['procesverloop'], row['beslissing']), axis=1)
+        df.to_csv(f'bart_summ_{instantie}.csv', index=False)
     elif args.multi == False:
         summary_result = []
         #print(documents)
@@ -220,20 +250,21 @@ if __name__ == "__main__":
 
     # Get method name for folder:
     if args.method == 1:
-        path = "results/results_textrank/"
+        path = "Results/results_textrank/"
     elif args.method == 2:
-        path = "results/results_kmeans/"
+        path = "Results/results_kmeans/"
     elif args.method == 3:
-        path = "results/results_bertextract/"
+        path = "Results/results_bertextract/"
     elif args.method == 4:
-        path = "results/results_bart/"
+        path = "Results/Summaries/results_bart/"
     elif args.method == 5:
-        path = "results/results_llm/"
+        path = "Results/results_llm/"
     else:
         raise ValueError(f"Unsupported summarization method: {args.method}")
 
+    instantie = df['instantie'][0]
     # Create the filename with the current date
-    filename = path + f'result_{date_str}.csv'
+    filename = path + f'result_{instantie}.csv'
     print(filename)
 
     df_copy.to_csv(filename, index=False)
