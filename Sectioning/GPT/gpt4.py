@@ -9,7 +9,7 @@ load_dotenv()
 
 client = openai.AzureOpenAI(
     api_version = "2023-07-01-preview",
-    azure_endpoint = 'https://genai-nexus.api.corpinter.net/apikey/',
+    azure_endpoint = '',
     api_key = os.getenv('NEXUS_API_KEY'),
 )
 
